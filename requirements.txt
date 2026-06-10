@@ -6,6 +6,6 @@ scipy
 openpyxl
 xlrd
 gunicorn
-
+waitress
 
 
