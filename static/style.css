@@ -10,6 +10,14 @@ body {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     font-family: 'Poppins', sans-serif;
     min-height: 100vh;
+    padding-bottom: 30px;
+}
+
+/* Container responsive */
+.container {
+    max-width: 1200px !important;
+    margin: 0 auto;
+    padding: 0 15px;
 }
 
 /* Logo et header */
@@ -44,6 +52,7 @@ body {
     color: transparent;
     letter-spacing: 2px;
     text-transform: uppercase;
+    margin: 0;
 }
 
 .subtitle {
@@ -63,7 +72,7 @@ body {
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .card-header {
@@ -85,10 +94,6 @@ body {
 }
 
 /* Formulaires */
-.match-form-card {
-    background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,249,250,0.98) 100%);
-}
-
 .form-label {
     font-weight: 600;
     color: #333;
@@ -103,34 +108,22 @@ body {
     color: #667eea;
 }
 
-.form-control, .form-select {
+.form-control,
+.form-select {
     border-radius: 15px;
     border: 2px solid #e0e0e0;
     transition: all 0.3s ease;
     font-weight: 500;
+    padding: 10px 12px;
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
 }
 
 /* Boutons */
-.btn-add {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    border-radius: 15px;
-    padding: 12px;
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-}
-
-.btn-add:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-}
-
 .btn-primary {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
@@ -149,39 +142,59 @@ body {
     border-radius: 30px;
     padding: 10px 20px;
     font-weight: 600;
+    border: 2px solid #dc3545;
+    background: transparent;
+    color: #dc3545;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-danger:hover {
+    background: #dc3545;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    border-radius: 15px;
+    padding: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-success:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
 }
 
 /* Tableau des matchs */
-.match-table {
+.table {
     margin-bottom: 0;
 }
 
-.match-table thead th {
+.table thead th {
     background: linear-gradient(135deg, #f8f9fa, #e9ecef);
     border: none;
-    padding: 15px;
+    padding: 12px;
     font-weight: 700;
     color: #333;
     font-size: 0.85rem;
     text-transform: uppercase;
 }
 
-.match-table tbody tr {
-    transition: all 0.3s ease;
-    border-bottom: 1px solid #eee;
-}
-
-.match-table tbody tr:hover {
-    background: linear-gradient(90deg, #f8f9fa, #fff);
-    transform: scale(1.01);
-}
-
-.match-table td {
+.table td {
     vertical-align: middle;
     padding: 12px;
 }
 
-/* Badges d'équipes */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Team badges */
 .team-badge {
     display: inline-flex;
     align-items: center;
@@ -210,6 +223,27 @@ body {
     color: #667eea;
 }
 
+/* Badges */
+.match-time {
+    background: #667eea;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: inline-block;
+}
+
+.vs-badge {
+    background: #ff6b6b;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
 /* Carte de résultat */
 .prediction-card {
     background: linear-gradient(135deg, #f8f9fa, #fff);
@@ -222,118 +256,73 @@ body {
 
 .prediction-card:hover {
     transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .match-header {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 10px;
     border-bottom: 2px solid #e0e0e0;
+    gap: 10px;
 }
 
-.match-time {
-    background: #667eea;
-    color: white;
-    padding: 5px 15px;
-    border-radius: 30px;
-    font-weight: 700;
-    font-size: 0.8rem;
-}
-
-.match-teams {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #333;
-}
-
-.team-logo-small {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 35px;
-    height: 35px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 50%;
-    margin: 0 10px;
-    color: white;
-    font-weight: 700;
-}
-
-.vs-badge {
-    background: #ff6b6b;
-    color: white;
-    padding: 3px 12px;
-    border-radius: 30px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    margin: 0 8px;
-}
-
-/* Barres de progression */
-.progress-custom {
-    height: 35px;
-    border-radius: 30px;
-    background-color: #e9ecef;
-    overflow: hidden;
+.result-box {
+    background: linear-gradient(135deg, #667eea15, #764ba215);
+    border-radius: 12px;
+    padding: 12px;
     margin: 10px 0;
 }
 
-.progress-bar-custom {
+.prediction-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.score-text {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Barres de progression */
+.probability-bar {
+    display: flex;
+    height: 35px;
+    border-radius: 30px;
+    overflow: hidden;
+    margin: 10px 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.prob-win {
+    background: linear-gradient(90deg, #28a745, #20c997);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    font-size: 0.85rem;
-    transition: width 0.5s ease;
 }
 
-.progress-win {
-    background: linear-gradient(90deg, #28a745, #20c997);
-}
-
-.progress-draw {
+.prob-draw {
     background: linear-gradient(90deg, #ffc107, #fd7e14);
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.progress-loss {
+.prob-loss {
     background: linear-gradient(90deg, #dc3545, #c82333);
-}
-
-/* Statistiques */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.stat-box {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.stat-box:hover {
-    background: #e9ecef;
-    transform: translateY(-2px);
-}
-
-.stat-value {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: #667eea;
-}
-
-.stat-label {
-    font-size: 0.7rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Animation de chargement */
@@ -353,58 +342,207 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .main-title {
-        font-size: 1.5rem;
-    }
-    
-    .match-teams {
-        font-size: 0.9rem;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .team-logo-small {
-        width: 25px;
-        height: 25px;
-        font-size: 0.7rem;
-    }
-}
-
 /* Badge de confiance */
 .confidence-high {
     background: #28a745;
     color: white;
-    padding: 2px 10px;
+    padding: 3px 12px;
     border-radius: 20px;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 600;
 }
 
 .confidence-medium {
     background: #ffc107;
     color: #333;
-    padding: 2px 10px;
+    padding: 3px 12px;
     border-radius: 20px;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 600;
 }
 
 .confidence-low {
     background: #dc3545;
     color: white;
-    padding: 2px 10px;
+    padding: 3px 12px;
     border-radius: 20px;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 600;
 }
 
-/* Pied de carte */
 .card-footer {
     background: #f8f9fa;
     border-radius: 0 0 20px 20px;
     padding: 15px 20px;
+}
+
+/* Bouton suppression dans tableau */
+.btn-sm-outline-danger {
+    background: transparent;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-sm-outline-danger:hover {
+    background: #dc3545;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* ========== RESPONSIVE ========== */
+/* Tablettes et mobiles */
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 20px;
+    }
+    
+    .main-title {
+        font-size: 1.5rem;
+    }
+    
+    .logo-container i {
+        font-size: 30px;
+        margin: 0 10px;
+    }
+    
+    .card-header {
+        font-size: 0.95rem;
+        padding: 12px 15px;
+    }
+    
+    .form-label {
+        font-size: 0.7rem;
+        margin-bottom: 5px;
+    }
+    
+    .form-control, .form-select {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+    
+    .btn-success, .btn-primary, .btn-outline-danger {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .table thead th {
+        font-size: 0.7rem;
+        padding: 8px;
+    }
+    
+    .table td {
+        padding: 8px;
+        font-size: 0.75rem;
+    }
+    
+    .match-time {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
+    
+    .prediction-card {
+        padding: 12px;
+    }
+    
+    .prediction-text {
+        font-size: 0.9rem;
+    }
+    
+    .probability-bar {
+        height: 28px;
+        font-size: 0.65rem;
+    }
+    
+    .confidence-high, .confidence-medium, .confidence-low {
+        font-size: 0.65rem;
+        padding: 2px 8px;
+    }
+}
+
+/* Très petits mobiles */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .main-title {
+        font-size: 1.2rem;
+    }
+    
+    .subtitle {
+        font-size: 0.7rem;
+    }
+    
+    .logo-container i {
+        font-size: 24px;
+        margin: 0 8px;
+    }
+    
+    .card-header {
+        font-size: 0.85rem;
+        padding: 10px 12px;
+    }
+    
+    .btn-success, .btn-primary, .btn-outline-danger {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+    }
+    
+    .table thead th {
+        font-size: 0.6rem;
+        padding: 6px;
+    }
+    
+    .table td {
+        padding: 6px;
+        font-size: 0.65rem;
+    }
+    
+    .match-time {
+        font-size: 0.6rem;
+        padding: 2px 6px;
+    }
+    
+    .vs-badge {
+        font-size: 0.55rem;
+        padding: 2px 6px;
+    }
+    
+    .prediction-card {
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+    
+    .prediction-text {
+        font-size: 0.8rem;
+    }
+    
+    .score-text {
+        font-size: 0.7rem;
+    }
+    
+    .probability-bar {
+        height: 24px;
+        font-size: 0.55rem;
+    }
+}
+
+/* Grands écrans PC */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+    
+    .main-title {
+        font-size: 2.5rem;
+    }
+    
+    .card-header {
+        font-size: 1.2rem;
+    }
 }

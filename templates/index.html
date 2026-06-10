@@ -2,6 +2,9 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="description" content="Analyse prédictive de football - Pronostics basés sur les performances des équipes">
     <title>Football Analyse - Pronostics</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,19 +14,31 @@
 
 <body>
     <div class="container mt-4">
+        <!-- Logo et titre -->
+        <div class="logo-container">
+            <i class="fas fa-futbol"></i>
+            <i class="fas fa-trophy"></i>
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="text-center mb-4">
+            <h1 class="main-title">FOOTBALL ANALYSE</h1>
+            <p class="subtitle">Pronostics intelligents basés sur les performances</p>
+        </div>
+
+        <!-- Carte d'ajout de match -->
         <div class="card shadow">
             <div class="card-header bg-gradient">
                 <i class="fas fa-futbol"></i> ANALYSE PRÉDICTIVE
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-3">
+                    <div class="col-12 col-md-3">
                         <label class="form-label fw-bold">
                             <i class="far fa-clock"></i> Heure
                         </label>
                         <input type="time" class="form-control" id="heure" value="17:15">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
                         <label class="form-label fw-bold">
                             <i class="fas fa-home"></i> Équipe Domicile
                         </label>
@@ -34,7 +49,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
                         <label class="form-label fw-bold">
                             <i class="fas fa-flag-checkered"></i> Équipe Extérieur
                         </label>
@@ -45,48 +60,54 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-1 d-flex align-items-end">
+                    <div class="col-12 col-md-1 d-flex align-items-end">
                         <button class="btn btn-success w-100" onclick="ajouterMatch()">
-                            <i class="fas fa-plus"></i>
+                            <i class="fas fa-plus"></i> <span class="d-none d-sm-inline">Ajouter</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Liste des matchs sélectionnés -->
         <div class="card mt-4 shadow">
             <div class="card-header bg-gradient">
                 <i class="fas fa-list"></i> MATCHS SÉLECTIONNÉS
                 <span class="badge bg-light text-dark ms-2" id="matchCount">0</span>
             </div>
             <div class="card-body p-0">
-                <table class="table table-bordered mb-0" id="tableMatchs">
-                    <thead>
-                        <tr>
-                            <th>Heure</th>
-                            <th>Equipe 1</th>
-                            <th></th>
-                            <th>Equipe 2</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="matchsBody">
-                        <tr>
-                            <td colspan="5" class="text-center text-muted">Aucun match sélectionné</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0" id="tableMatchs">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Heure</th>
+                                <th>Domicile</th>
+                                <th class="text-center">VS</th>
+                                <th>Extérieur</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matchsBody">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="fas fa-info-circle me-2"></i>Aucun match sélectionné
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="card-footer">
+            <div class="card-footer d-flex justify-content-between flex-wrap gap-2">
                 <button class="btn btn-outline-danger" onclick="viderMatchs()">
-                    <i class="fas fa-trash-alt"></i> Vider
+                    <i class="fas fa-trash-alt"></i> <span class="d-none d-sm-inline">Vider</span>
                 </button>
-                <button class="btn btn-primary float-end" onclick="analyser()">
-                    <i class="fas fa-chart-line"></i> ANALYSER
+                <button class="btn btn-primary" onclick="analyser()">
+                    <i class="fas fa-chart-line"></i> <span class="d-none d-sm-inline">ANALYSER</span>
                 </button>
             </div>
         </div>
 
+        <!-- Résultats des pronostics -->
         <div class="card mt-4 shadow" id="resultCard" style="display: none;">
             <div class="card-header bg-gradient-success">
                 <i class="fas fa-chart-simple"></i> PRONOSTICS
@@ -96,5 +117,6 @@
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify
 import pandas as pd
 from collections import defaultdict
 import os
-import math
 import numpy as np
 import pickle
 from waitress import serve
@@ -15,7 +14,7 @@ from scipy.stats import poisson
 app = Flask(__name__)
 
 DATA_PATH = 'data/virtual_stats.xlsx'
-MODEL_PATH = 'model_calibrated.pkl'
+MODEL_PATH = 'model.pkl'
 SHEET_NAME = 'Sheet1'
 
 EQUIPES = [
@@ -26,6 +25,7 @@ EQUIPES = [
 ]
 
 calibrated_model = None
+
 
 def safe_int_score(score):
     if pd.isna(score):
@@ -38,6 +38,7 @@ def safe_int_score(score):
         return int(a), int(b)
     except:
         return None
+
 
 def load_match_data():
     try:
@@ -112,6 +113,7 @@ def load_match_data():
         print(f"Erreur lors du chargement des données: {e}")
         return {}, [], 1.25, pd.DataFrame()
 
+
 def calculate_head_to_head(team1, team2, matches_history):
     team1_wins = team2_wins = draws = 0
     total_goals1 = total_goals2 = 0
@@ -148,6 +150,7 @@ def calculate_head_to_head(team1, team2, matches_history):
         'draw_rate': (draws / matches_played * 100) if matches_played > 0 else 33.3
     }
 
+
 def expected_goals(team, opponent, team_stats, league_avg, is_home=True):
     t = team_stats.get(team, {})
     o = team_stats.get(opponent, {})
@@ -165,6 +168,7 @@ def expected_goals(team, opponent, team_stats, league_avg, is_home=True):
 
     lam = league_avg * team_attack * opp_defense
     return max(0.15, min(lam, 5.0))
+
 
 def recent_form(team, matches_history, last_n=5):
     relevant = []
@@ -191,6 +195,7 @@ def recent_form(team, matches_history, last_n=5):
     gf_avg = sum(x[1] for x in relevant) / len(relevant)
     ga_avg = sum(x[2] for x in relevant) / len(relevant)
     return {'points_rate': points_rate, 'gf_avg': gf_avg, 'ga_avg': ga_avg}
+
 
 def build_dataset(team_stats, matches_history, league_avg, df):
     X, y = [], []
@@ -239,13 +244,17 @@ def build_dataset(team_stats, matches_history, league_avg, df):
 
     return np.array(X), np.array(y)
 
+
 def train_calibrated_model(X, y):
+    unique_classes = np.unique(y)
+    stratify_value = y if len(unique_classes) > 1 else None
+
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y if len(np.unique(y)) > 1 else None
+        X, y, test_size=0.2, random_state=42, stratify=stratify_value
     )
 
     base_model = RandomForestClassifier(
-        n_estimators=500,
+        n_estimators=800,
         max_depth=12,
         min_samples_leaf=3,
         min_samples_split=6,
@@ -254,8 +263,12 @@ def train_calibrated_model(X, y):
     )
     base_model.fit(X_train, y_train)
 
-    calibrated = CalibratedClassifierCV(base_model, method='sigmoid', cv='prefit')
-    calibrated.fit(X_test, y_test)
+    try:
+        calibrated = CalibratedClassifierCV(estimator=base_model, cv='prefit', method='sigmoid')
+        calibrated.fit(X_test, y_test)
+    except TypeError:
+        calibrated = CalibratedClassifierCV(base_model, method='sigmoid', cv=3)
+        calibrated.fit(X, y)
 
     pred = base_model.predict(X_test)
     prob = calibrated.predict_proba(X_test)
@@ -267,6 +280,7 @@ def train_calibrated_model(X, y):
     }
 
     return calibrated, metrics
+
 
 def load_calibrated_model():
     global calibrated_model
@@ -282,6 +296,7 @@ def load_calibrated_model():
         except Exception as e:
             print(f"Erreur chargement modèle: {e}")
     return None
+
 
 def init_model():
     global calibrated_model
@@ -314,20 +329,11 @@ def init_model():
     print("Modèle entraîné et sauvegardé avec succès.")
     print(metrics)
 
+
 def predict_poisson_correct_score(lam1, lam2, max_goals=6):
-    """
-    Calcule la probabilité de chaque score exact (i:j) avec Poisson.
-    max_goals: nombre max de buts pour chaque équipe (0..max_goals)
-    Retourne:
-      - score_matrix: dict {"i:j": proba}
-      - best_score: score le plus probable (i:j)
-      - best_prob: proba du meilleur score
-    """
-    # Probabilités de buts pour chaque équipe (0..max_goals)
     home_probs = [poisson.pmf(i, lam1) for i in range(0, max_goals + 1)]
     away_probs = [poisson.pmf(j, lam2) for j in range(0, max_goals + 1)]
 
-    # Matrice de probabilité de chaque score (i:j)
     score_matrix = np.outer(home_probs, away_probs)
 
     correct_score_probs = {}
@@ -343,10 +349,9 @@ def predict_poisson_correct_score(lam1, lam2, max_goals=6):
                 best_prob = prob
                 best_score = key
 
-    # Somme des probabilités (pourcentage de couverture)
     total_prob = sum(correct_score_probs.values())
-
     return correct_score_probs, best_score, best_prob, total_prob
+
 
 def predict_with_model_and_poisson(team1, team2, team_stats, matches_history, league_avg, model):
     stats1 = team_stats.get(team1, {'played': 0})
@@ -372,12 +377,10 @@ def predict_with_model_and_poisson(team1, team2, team_stats, matches_history, le
     form1 = recent_form(team1, matches_history, 5)
     form2 = recent_form(team2, matches_history, 5)
 
-    # Ajustement lam avec h2h
     if h2h['matches_played'] > 0:
         lam1 = 0.85 * lam1 + 0.15 * (h2h['total_goals1'] / h2h['matches_played'])
         lam2 = 0.85 * lam2 + 0.15 * (h2h['total_goals2'] / h2h['matches_played'])
 
-    # Probabilités 3 classes (ML)
     features = np.array([[
         lam1, lam2,
         h2h['matches_played'],
@@ -417,10 +420,7 @@ def predict_with_model_and_poisson(team1, team2, team_stats, matches_history, le
     else:
         confidence = "Faible"
 
-    # Poisson correct score
     correct_scores, best_score, best_prob, total_prob = predict_poisson_correct_score(lam1, lam2, max_goals=6)
-
-    # Convertir en %
     correct_scores_percent = {k: round(v * 100, 2) for k, v in correct_scores.items()}
     best_prob_percent = round(best_prob * 100, 2)
 
@@ -454,9 +454,11 @@ def predict_with_model_and_poisson(team1, team2, team_stats, matches_history, le
         'use_calibration': use_calibration
     }
 
+
 @app.route("/")
 def index():
     return render_template("index.html", equipes=EQUIPES)
+
 
 @app.route("/train-model", methods=['POST'])
 def train_model():
@@ -486,6 +488,7 @@ def train_model():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 @app.route("/analyser", methods=['POST'])
 def analyser():
@@ -523,6 +526,7 @@ def analyser():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 if __name__ == "__main__":
     init_model()

@@ -265,13 +265,58 @@ function supprimerMatch(index) {
 }
 
 function viderMatchs() {
-    if (matchs.length > 0 && confirm("Voulez-vous vraiment vider la liste des matchs?")) {
+    if (matchs.length === 0) return;
+    
+    // Créer le modal de confirmation responsive
+    const modalHtml = `
+        <div class="modal fade" id="confirmModal" tabindex="-1" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 90%; width: 400px;">
+                <div class="modal-content" style="border-radius: 20px; margin: 10px;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #dc3545, #c82333); border-radius: 20px 20px 0 0; padding: 15px;">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-trash-alt text-white" style="font-size: 1.3rem;"></i>
+                            <h5 class="modal-title text-white ms-2" style="font-size: 1.1rem;">Confirmation</h5>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="font-size: 0.8rem;"></button>
+                    </div>
+                    <div class="modal-body text-center py-4" style="padding: 20px 15px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2.5rem; color: #dc3545;"></i>
+                        <p class="mt-3 fw-bold" style="font-size: 1rem;">Voulez-vous vraiment vider la liste des matchs ?</p>
+                        <p class="text-muted small" style="font-size: 0.8rem;">Cette action est irréversible.</p>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between" style="padding: 12px 15px; gap: 10px;">
+                        <button type="button" class="btn btn-secondary flex-grow-1" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 12px; font-size: 0.85rem;">
+                            <i class="fas fa-times"></i> Annuler
+                        </button>
+                        <button type="button" class="btn btn-danger flex-grow-1" id="confirmViderBtn" style="border-radius: 30px; padding: 8px 12px; font-size: 0.85rem;">
+                            <i class="fas fa-trash-alt"></i> Oui, vider
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Supprimer l'ancien modal s'il existe
+    const oldModal = document.getElementById('confirmModal');
+    if (oldModal) oldModal.remove();
+    
+    // Ajouter le modal au body
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Afficher le modal
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    modal.show();
+    
+    // Gérer le clic sur le bouton de confirmation
+    document.getElementById('confirmViderBtn').onclick = function() {
         matchs = [];
         afficherMatchs();
         document.getElementById("resultCard").style.display = "none";
         resetSelects();
         updateAllSelects();
-    }
+        modal.hide();
+    };
 }
 
 function analyser() {
