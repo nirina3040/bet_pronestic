@@ -1,0 +1,410 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+}
+
+/* Logo et header */
+.logo-container {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.logo-container i {
+    font-size: 40px;
+    margin: 0 15px;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    animation: bounce 2s infinite;
+}
+
+.logo-container i:nth-child(1) { animation-delay: 0s; }
+.logo-container i:nth-child(2) { animation-delay: 0.3s; }
+.logo-container i:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.main-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffd700, #ff6b6b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    color: #a0c4ff;
+    font-size: 0.9rem;
+    margin-top: -5px;
+}
+
+/* Cartes */
+.card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    border: none;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 15px 20px;
+    border-radius: 20px 20px 0 0 !important;
+    letter-spacing: 1px;
+}
+
+.card-header i {
+    margin-right: 10px;
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+}
+
+/* Formulaires */
+.match-form-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,249,250,0.98) 100%);
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.form-label i {
+    margin-right: 5px;
+    color: #667eea;
+}
+
+.form-control, .form-select {
+    border-radius: 15px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Boutons */
+.btn-add {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 12px;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.btn-add:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 30px;
+    padding: 10px 25px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-outline-danger {
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+/* Tableau des matchs */
+.match-table {
+    margin-bottom: 0;
+}
+
+.match-table thead th {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: none;
+    padding: 15px;
+    font-weight: 700;
+    color: #333;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.match-table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #eee;
+}
+
+.match-table tbody tr:hover {
+    background: linear-gradient(90deg, #f8f9fa, #fff);
+    transform: scale(1.01);
+}
+
+.match-table td {
+    vertical-align: middle;
+    padding: 12px;
+}
+
+/* Badges d'équipes */
+.team-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.team-icon {
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+}
+
+.team-icon i {
+    font-size: 16px;
+    color: #667eea;
+}
+
+/* Carte de résultat */
+.prediction-card {
+    background: linear-gradient(135deg, #f8f9fa, #fff);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 5px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.prediction-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.match-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.match-time {
+    background: #667eea;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.match-teams {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.team-logo-small {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    margin: 0 10px;
+    color: white;
+    font-weight: 700;
+}
+
+.vs-badge {
+    background: #ff6b6b;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin: 0 8px;
+}
+
+/* Barres de progression */
+.progress-custom {
+    height: 35px;
+    border-radius: 30px;
+    background-color: #e9ecef;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-bar-custom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: width 0.5s ease;
+}
+
+.progress-win {
+    background: linear-gradient(90deg, #28a745, #20c997);
+}
+
+.progress-draw {
+    background: linear-gradient(90deg, #ffc107, #fd7e14);
+}
+
+.progress-loss {
+    background: linear-gradient(90deg, #dc3545, #c82333);
+}
+
+/* Statistiques */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.stat-box {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.stat-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #667eea;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Animation de chargement */
+.loading-spinner {
+    text-align: center;
+    padding: 40px;
+}
+
+.loading-spinner i {
+    font-size: 3rem;
+    color: #667eea;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 1.5rem;
+    }
+    
+    .match-teams {
+        font-size: 0.9rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .team-logo-small {
+        width: 25px;
+        height: 25px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Badge de confiance */
+.confidence-high {
+    background: #28a745;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.confidence-medium {
+    background: #ffc107;
+    color: #333;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.confidence-low {
+    background: #dc3545;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* Pied de carte */
+.card-footer {
+    background: #f8f9fa;
+    border-radius: 0 0 20px 20px;
+    padding: 15px 20px;
+}
