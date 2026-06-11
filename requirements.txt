@@ -1,9 +1,11 @@
 flask
+scikit-learn
 pandas
 numpy
 scipy
-scikit-learn
-xgboost
-imbalanced-learn
 openpyxl
+xlrd
 gunicorn
+imbalanced-learn
+lightgbm
+waitress
