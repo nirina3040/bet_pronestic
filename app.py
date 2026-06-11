@@ -6,6 +6,7 @@ import numpy as np
 import pickle
 import warnings
 warnings.filterwarnings('ignore')
+
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, log_loss, classification_report, f1_score, confusion_matrix
@@ -16,9 +17,11 @@ from imblearn.over_sampling import SMOTE
 
 app = Flask(__name__)
 
-DATA_PATH = 'data/virtual_stats.xlsx'
-MODEL_FINAL_PATH = 'model_final.pkl'
-SCALER_FINAL_PATH = 'scaler_final.pkl'
+# Configuration - Ho an'ny Render dia mila path absolu
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(BASE_DIR, 'data', 'virtual_stats.xlsx')
+MODEL_FINAL_PATH = os.path.join(BASE_DIR, 'model_final.pkl')
+SCALER_FINAL_PATH = os.path.join(BASE_DIR, 'scaler_final.pkl')
 SHEET_NAME = 'Sheet1'
 
 EQUIPES = [
@@ -146,7 +149,7 @@ def load_match_data():
         return team_stats, matches_history, league_avg_goals_per_team, df
 
     except Exception as e:
-        print(f"Erreur: {e}")
+        print(f"Erreur load_match_data: {e}")
         return {}, [], 1.25, pd.DataFrame()
 
 
@@ -405,7 +408,7 @@ def build_dataset_v3(team_stats, matches_history, league_avg, df):
 
 
 def train_v3_model(X, y):
-    """Modèle V3 - Meilleurs résultats (Recall Draw 47.07%, Score Paris 46.3%)"""
+    """Modèle V3 - Meilleurs résultats"""
     
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
@@ -492,7 +495,7 @@ def train_v3_model(X, y):
     
     prob_ensemble = prob_xgb * 0.45 + prob_rf * 0.30 + prob_gb * 0.25
     
-    # Optimisation du seuil - focus sur recall draw
+    # Optimisation du seuil
     best_threshold = 0.5
     best_score = 0
     best_metrics = None
@@ -508,7 +511,6 @@ def train_v3_model(X, y):
         acc = accuracy_score(y_test, pred_adj)
         recall_draw = report['2']['recall']
         
-        # Score composite: Recall Draw 50% + Accuracy 50%
         composite = recall_draw * 0.50 + acc * 0.50
         
         if composite > best_score:
@@ -529,7 +531,6 @@ def train_v3_model(X, y):
     print(f"   Recall Home: {best_metrics['recall_home']*100:.2f}%")
     print(f"   Recall Away: {best_metrics['recall_away']*100:.2f}%")
     
-    # Application du seuil
     prob_final = prob_ensemble.copy()
     prob_final[:, 2] = prob_final[:, 2] * (best_threshold / 0.5)
     prob_final = prob_final / prob_final.sum(axis=1, keepdims=True)
@@ -759,7 +760,8 @@ def load_model():
             print("✅ Modèle V3 chargé!")
             return model
         except Exception as e:
-            print(f"Erreur: {e}")
+            print(f"Erreur chargement: {e}")
+            return None
     return None
 
 
@@ -767,14 +769,15 @@ def init_v3_model():
     global model, scaler
     
     print("\n" + "="*80)
-    print(" "*15 + "🚀 ENTRAÎNEMENT MODÈLE V3 - VERSION OPTIMALE 🚀")
+    print(" "*15 + "🚀 ENTRAÎNEMENT MODÈLE V3 🚀")
     print("="*80 + "\n")
     
     team_stats, matches_history, league_avg, df = load_match_data()
     if not team_stats or len(df) == 0:
-        print("❌ Aucune donnée")
+        print("❌ Aucune donnée - Vérifiez le fichier Excel")
         return None
 
+    # Vérifier si le modèle existe déjà
     if os.path.exists(MODEL_FINAL_PATH) and os.path.exists(SCALER_FINAL_PATH):
         try:
             with open(MODEL_FINAL_PATH, 'rb') as f:
@@ -788,7 +791,7 @@ def init_v3_model():
 
     X, y = build_dataset_v3(team_stats, matches_history, league_avg, df)
     if len(X) < 100:
-        print("❌ Pas assez de données")
+        print(f"❌ Pas assez de données: {len(X)} < 100")
         return None
 
     model, metrics = train_v3_model(X, y)
@@ -798,10 +801,10 @@ def init_v3_model():
     with open(SCALER_FINAL_PATH, 'wb') as f:
         pickle.dump(scaler, f)
 
-    print("✅ Modèle V3 sauvegardé!")
+    print("\n✅ Modèle V3 sauvegardé!")
     
     print("\n" + "="*80)
-    print(" "*15 + "🏆 RÉSULTATS MODÈLE V3 OPTIMAL 🏆")
+    print(" "*15 + "🏆 RÉSULTATS MODÈLE V3 🏆")
     print("="*80)
     
     print(f"\n🎯 ACCURACY: {metrics['accuracy']*100:.2f}%")
@@ -815,10 +818,6 @@ def init_v3_model():
                      metrics['report']['2']['recall'] * 40)
     print(f"\n🎲 SCORE POUR PARIS: {betting_score:.1f}%")
     
-    print("\n✅ MODÈLE OPTIMAL POUR LES PARIS SPORTIFS!")
-    print("   - Recall Draw: 47% (1 match nul sur 2)")
-    print("   - Score Paris: 46.3% (meilleur que tous)")
-    
     return model
 
 
@@ -831,6 +830,9 @@ def index():
 def train_model():
     try:
         team_stats, matches_history, league_avg, df = load_match_data()
+        if not team_stats or len(df) == 0:
+            return jsonify({'error': 'Erreur chargement données'}), 500
+
         X, y = build_dataset_v3(team_stats, matches_history, league_avg, df)
         
         if len(X) < 100:
@@ -869,7 +871,7 @@ def analyser():
         model_dict = load_model()
         
         if model_dict is None:
-            return jsonify({'error': 'Modèle non entraîné. Utilisez /train-model d\'abord'}), 400
+            return jsonify({'error': 'Modèle non entraîné. Veuillez réessayer dans quelques instants.'}), 400
 
         predictions = []
         for match in matchs:
@@ -901,8 +903,6 @@ def model_info():
         'model_type': 'Ultimate V3 - Optimal',
         'features_count': 42,
         'version': 'V3_FINAL',
-        'recall_draw': '47.07%',
-        'score_paris': '46.3%',
         'strategy': '50% Draw Recall + 50% Accuracy'
     })
 
@@ -930,12 +930,20 @@ if __name__ == "__main__":
     print(" "*15 + "⚽ MODÈLE V3 OPTIMAL - POUR PARIS SPORTIFS ⚽")
     print("="*80)
     
-    # Entraîner automatiquement le modèle au démarrage
+    # Vérifier si le fichier data existe
+    if not os.path.exists(DATA_PATH):
+        print(f"\n⚠️ Attention: Fichier Excel non trouvé à {DATA_PATH}")
+        print("📌 Veuillez vérifier que le fichier 'virtual_stats.xlsx' est dans le dossier 'data/'")
+    
+    # Entraînement automatique
     print("\n🚀 Entraînement du modèle en cours...\n")
     init_v3_model()
     
-    print("\n✅ Modèle prêt!")
+    print("\n✅ Modèle prêt! Serveur en ligne...")
     
-    # Ho an'ny Render - mampiasa ny port omen'ny environnement
+    # Port pour Render
     port = int(os.environ.get('PORT', 5000))
+    print(f"\n🌐 Serveur démarré sur http://0.0.0.0:{port}")
+    print("="*80 + "\n")
+    
     app.run(host='0.0.0.0', port=port, debug=False)
