@@ -9,3 +9,4 @@ gunicorn
 imbalanced-learn
 lightgbm
 waitress
+xgboost
