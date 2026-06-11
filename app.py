@@ -927,7 +927,6 @@ def get_stats():
 
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=5000)
     print("\n" + "="*80)
     print(" "*15 + "⚽ MODÈLE V3 OPTIMAL - POUR PARIS SPORTIFS ⚽")
     print("="*80)
@@ -952,3 +951,4 @@ if __name__ == "__main__":
     print(" "*25 + "🌐 SERVEUR DÉMARRÉ SUR http://127.0.0.1:5000 🌐")
     print("="*80 + "\n")
     
+    app.run(debug=True, host='0.0.0.0', port=5000)
