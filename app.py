@@ -17,11 +17,9 @@ from imblearn.over_sampling import SMOTE
 
 app = Flask(__name__)
 
-# Configuration - Ho an'ny Render dia mila path absolu
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_DIR, 'data', 'virtual_stats.xlsx')
-MODEL_FINAL_PATH = os.path.join(BASE_DIR, 'model_final.pkl')
-SCALER_FINAL_PATH = os.path.join(BASE_DIR, 'scaler_final.pkl')
+DATA_PATH = 'data/virtual_stats.xlsx'
+MODEL_FINAL_PATH = 'model_final.pkl'
+SCALER_FINAL_PATH = 'scaler_final.pkl'
 SHEET_NAME = 'Sheet1'
 
 EQUIPES = [
