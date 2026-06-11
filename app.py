@@ -6,7 +6,6 @@ import numpy as np
 import pickle
 import warnings
 warnings.filterwarnings('ignore')
-from waitress import serve
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, log_loss, classification_report, f1_score, confusion_matrix
@@ -930,25 +929,13 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print(" "*15 + "⚽ MODÈLE V3 OPTIMAL - POUR PARIS SPORTIFS ⚽")
     print("="*80)
-    print("\n📊 Caractéristiques V3:")
-    print("   🔥 target_draw: 72% (pour bien détecter les nuls)")
-    print("   📈 Poids draw: 1.55")
-    print("   🏆 Score composite: 50% Draw Recall + 50% Accuracy")
-    print("   🎯 Recall Draw: 47.07% (1 match nul sur 2!)")
-    print("   💰 Score Paris: 46.3% (meilleur score)")
-    print("\n" + "="*80 + "\n")
     
-    # Supprimer les anciens modèles
-    if os.path.exists(MODEL_FINAL_PATH):
-        os.remove(MODEL_FINAL_PATH)
-        print("🗑️ Ancien modèle supprimé...\n")
-    if os.path.exists(SCALER_FINAL_PATH):
-        os.remove(SCALER_FINAL_PATH)
-    
+    # Entraîner automatiquement le modèle au démarrage
+    print("\n🚀 Entraînement du modèle en cours...\n")
     init_v3_model()
     
-    print("\n" + "="*80)
-    print(" "*25 + "🌐 SERVEUR DÉMARRÉ SUR http://127.0.0.1:5000 🌐")
-    print("="*80 + "\n")
+    print("\n✅ Modèle prêt!")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Ho an'ny Render - mampiasa ny port omen'ny environnement
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
