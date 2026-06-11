@@ -923,6 +923,33 @@ def get_stats():
     return jsonify({'teams': stats_summary})
 
 
+@app.route("/debug", methods=['GET'])
+def debug():
+    """Affiche les fichiers disponibles"""
+    import os
+    
+    # Lister les fichiers
+    root_files = os.listdir('.')
+    
+    # Vérifier le dossier data
+    data_files = []
+    if os.path.exists('data'):
+        data_files = os.listdir('data')
+    
+    # Vérifier les fichiers modèle
+    model_exists = os.path.exists('model_final.pkl') or os.path.exists('model.pkl')
+    scaler_exists = os.path.exists('scaler_final.pkl') or os.path.exists('scaler.pkl')
+    
+    return jsonify({
+        'current_directory': os.getcwd(),
+        'root_files': root_files[:50],  # 50 premiers fichiers
+        'data_files': data_files,
+        'model_exists': model_exists,
+        'scaler_exists': scaler_exists,
+        'data_path_exists': os.path.exists('data/virtual_stats.xlsx')
+    })
+
+
 if __name__ == "__main__":
     print("\n" + "="*80)
     print(" "*15 + "⚽ MODÈLE V3 OPTIMAL - POUR PARIS SPORTIFS ⚽")
